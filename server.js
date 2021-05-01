@@ -9,14 +9,14 @@ app.use(express.static('public'))
 
 io.on('connection', socket => {
 
-  socket.on('join-room', (roomId, userId) => {
+  socket.on('join-room', data => {
 
-    console.log('join')
-    socket.join(roomId)
-    socket.to(roomId).broadcast.emit('user-connected', userId)
+    console.log('join', data)
+    socket.join(data.roomId)
+    socket.to(data.roomId).broadcast.emit('user-connected', data.userId)
 
     socket.on('disconnect', () => {
-      socket.to(roomId).broadcast.emit('user-disconnected', userId)
+      socket.to(data.roomId).broadcast.emit('user-disconnected', data.userId)
     })
 
   })
