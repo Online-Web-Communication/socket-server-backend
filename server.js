@@ -7,7 +7,9 @@ const { resetRooms, checkRooms, rooms } = require('./room/rooms')
 
 io.on('connection', socket => {
 
- // socket.emit('rooms', rooms)
+  setInterval(() => {
+    socket.emit('rooms', rooms)
+  }, 1000);
 
   socket.on('join-room', data => {
 
