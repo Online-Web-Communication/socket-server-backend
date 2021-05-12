@@ -1,33 +1,61 @@
 const express = require('express')
 const app = express()
-const server = require('http').Server(app)
-const io = require('socket.io')(server)
+const { v4: uuidV4 } = require('uuid')
+const http = require('http').Server(app)
+const io = require('socket.io')(http)
+
 const { resetRooms, checkRooms, rooms } = require('./room/rooms')
 
+const port = 3000
+
+
+http.listen(port, () => {
+  console.log('listening ' + port)
+})
+
+var socketRooms = []
 
 io.on('connection', socket => {
+  console.log('bağlandı')
 
   setInterval(() => {
     socket.emit('rooms', rooms)
   }, 1000);
 
-  socket.on('join-room', data => {
+  socket.on('create or join', room => {
+    // const myRoom = io.sockets.adapter.rooms[room] || { length: 0 }
+    // const numClients = myRoom.length
 
-    console.log('join', data)
-    socket.join(data.roomId)
+    socket.join(room)
+    socketRooms.push({ socket_id: socket.id, room: room, uuid: uuidV4() })
+    checkRooms(io.sockets.adapter.rooms, room)
+    io.to(socket.id).emit('mySocket', { room: room, uuid: socketRooms[socketRooms.length - 1].uuid, socket_id: socket.id, clients: socketRooms })
 
-    checkRooms(io.sockets.adapter.rooms, data)
+    let isRoom = socketRooms.find(x => { return x.room == room })
+    if (!isRoom) {
+      console.log(socket.id, 'Kullanıcısı,', room, ' Odasını Oluşturdu.')
+    } else {
+      console.log(socket.id, 'Kullanıcısı,', room, 'Odasına Katıldı. Odadaki Kullanıcı Sayısı', socketRooms.filter(x => x.room === room).length)
+    }
+  })
 
-    socket.to(data.roomId).broadcast.emit('user-connected', data.userId)
+  socket.on('ready', data => {
+    io.to(data.your).emit('joined', data)
+  })
 
-    socket.on('disconnect', () => {
-      socket.to(data.roomId).broadcast.emit('user-disconnected', data.userId)
-      resetRooms()
-    })
+  socket.on('sendAnswer', data => {
+    io.to(data.socket_id).emit('response', data)
+  })
+
+  socket.on('candidate', event => {
+    io.to(event.socket_id).emit('candidate', event)
+  })
+
+  socket.on('disconnect', () => {
+    const index = socketRooms.findIndex(x => x.socket_id == socket.id)
+    if (index) socketRooms.splice(index, 1)
+    console.log("Kullanıcı Ayrıldı:", socket.id)
+    resetRooms()
 
   })
-})
-
-server.listen(3000, () => {
-  console.log('Port Listening 3000')
 })

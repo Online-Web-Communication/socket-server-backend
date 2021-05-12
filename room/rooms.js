@@ -4,18 +4,18 @@ const checkRooms = (io_rooms, data) => {
 
     for (const [key, value] of Object.entries(io_rooms)) {
 
-        if (key == data.roomId) {
+        if (key == data) {
 
-            const isThere = rooms.find(item => { return item.room_name == data.roomId })
+            const isThere = rooms.find(item => { return item.room_name == data })
 
             if (!isThere) {
 
-                rooms.push({ room_name: data.roomId, person_number: value })
+                rooms.push({ room_name: data, person_number: value })
                 console.log(rooms)
 
             } else {
 
-                const indexRoom = rooms.findIndex(item => { return item.room_name == data.roomId })
+                const indexRoom = rooms.findIndex(item => { return item.room_name == data })
                 rooms[indexRoom].person_number = value
                 console.log(rooms)
 
