@@ -54,7 +54,7 @@ io.on('connection', socket => {
 
   socket.on('disconnect', () => {
     const index = socketRooms.findIndex(x => x.socket_id == socket.id)
-    if (index) socketRooms.splice(index, 1)
+    if (index != -1) socketRooms.splice(index, 1)
     console.log("Kullanıcı Ayrıldı:", socket.id)
     resetRooms()
 
