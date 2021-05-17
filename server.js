@@ -30,7 +30,7 @@ io.on('connection', socket => {
     socket.join(room)
     socketRooms.push({ socket_id: socket.id, room: room, uuid: uuidV4() })
     checkRooms(io.sockets.adapter.rooms, room)
-    io.to(socket.id).emit('mySocket', { room: room, uuid: socketRooms[socketRooms.length - 1].uuid, socket_id: socket.id, clients: socketRooms })
+    io.to(socket.id).emit('mySocket', { room: room, uuid: socketRooms[socketRooms.length - 1].uuid, socket_id: socket.id, clients: socketRooms.filter(x => x.room == room) })
 
     let isRoom = socketRooms.find(x => { return x.room == room })
     if (!isRoom) {
