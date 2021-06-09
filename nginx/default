@@ -1,16 +1,16 @@
 server {
         listen 80;
-        server_name e-garsonum.com;
+        server_name weparley.com;
         rewrite ^(.*)   https://$host$1 permanent;
 }
 
 server {
-        server_name e-garsonum.com;
+        server_name weparley.com;
         listen 443 ssl;
         listen [::]:443 ssl;
 
-        ssl_certificate /etc/letsencrypt/live/e-garsonum.com/fullchain.pem;
-        ssl_certificate_key /etc/letsencrypt/live/e-garsonum.com/privkey.pem;
+        ssl_certificate /etc/letsencrypt/live/weparley.com/fullchain.pem;
+        ssl_certificate_key /etc/letsencrypt/live/weparley.com/privkey.pem;
 
 	location /socket.io/ {
                 proxy_pass              http://localhost:3000;
@@ -27,7 +27,7 @@ server {
         }
 
 	location / {
-                #proxy_pass https://e-garsonum.com;
+                #proxy_pass https://weparley.com;
                 #root /usr/share/nginx/html;
                 #index index.html;
         }
