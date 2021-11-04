@@ -11,9 +11,12 @@ ENV TURN_SECRET mysecret
 ENV TURN_SERVER_NAME coturn
 ENV TURN_REALM north.gov
 
-COPY ./config/start_coturn.sh /
-COPY ./config/turnserver.conf /etc/
-COPY ./config/coturn /etc/default/
-RUN chmod +x start_coturn.sh
+COPY ./config/start_coturn.sh /etc
+COPY ./config/turnserver.conf /etc
+COPY ./config/coturn /etc/default
+
+RUN chmod +x /etc/start_coturn.sh
+
+WORKDIR /etc
 
 CMD ["./start_coturn.sh"]
