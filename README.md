@@ -1,4 +1,5 @@
 # Create Secret Key
+Bu komut turn ve stun için kullanılan username ve passwordü üretiyor.
 ````
 secret=mysecret && \
 time=$(date +%s) && \
